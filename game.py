@@ -4,7 +4,7 @@ import random
 
 import pygame
 
-from constants import WIDTH, HEIGHT, SPEED
+from constants import WIDTH, HEIGHT, SPEED, SPRITE_WIDTH
 from player import Player
 
 main_dir = os.path.split(os.path.abspath(__file__))[0]
@@ -16,6 +16,10 @@ def load_image(name, colorkey=None, scale=.1):
     image = pygame.image.load(fullname)
 
     size = image.get_size()
+    scale = SPRITE_WIDTH/size[0]
+    # print(size)
+    # print(size[0] / SPRITE_WIDTH, size[1] / SPRITE_WIDTH)
+    # print(SPRITE_WIDTH/size[0], SPRITE_WIDTH/size[1])
     size = (size[0] * scale, size[1] * scale)
     image = pygame.transform.scale(image, size)
 
