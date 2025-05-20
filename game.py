@@ -46,11 +46,14 @@ player_object = Player(player, 40, SPEED)
 direction = random.randint(0, 3)
 count = 0
 change_dir = 10
+start = False
 
 while running:
     # poll for events
     # pygame.QUIT event means the user clicked X to close your window
     for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN:
+            start = True
         if event.type == pygame.QUIT:
             running = False
 
@@ -58,28 +61,28 @@ while running:
     screen.fill("purple")
     
     # draw doughnut
-    pygame.draw.circle(screen, "pink", doughnut_pos, 40)
-    pygame.draw.circle(screen, "purple", doughnut_pos, 20)
+    pygame.draw.circle(screen, "pink", doughnut_pos, SPRITE_WIDTH/2, SPRITE_WIDTH//4)
+    # pygame.draw.circle(screen, "purple", doughnut_pos, SPRITE_WIDTH/4) # inner circle should be half radius of outer circle
 
     keys = pygame.key.get_pressed()
     player_object.move(keys)
     screen.blit(player_object.image, player_object.pos)
 
-    if count == change_dir:
-        direction = random.randint(0, 3)
-        count = 0
-    else:
-        count +=1
-    # print(direction)
-    
-    if direction == 0:
-        doughnut_pos.y -= SPEED
-    elif direction == 1:
-        doughnut_pos.y += SPEED
-    elif direction == 2:
-        doughnut_pos.x -= SPEED
-    else:
-        doughnut_pos.x += SPEED
+    if start:
+        if count == change_dir:
+            direction = random.randint(0, 3)
+            count = 0
+        else:
+            count +=1
+
+        if direction == 0:
+            doughnut_pos.y -= SPEED
+        elif direction == 1:
+            doughnut_pos.y += SPEED
+        elif direction == 2:
+            doughnut_pos.x -= SPEED
+        else:
+            doughnut_pos.x += SPEED
 
     # pygame.display.update()
     # if keys[pygame.K_w] or keys[pygame.K_UP]:
