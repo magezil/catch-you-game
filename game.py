@@ -5,7 +5,9 @@ import random
 import pygame
 
 from constants import WIDTH, HEIGHT, SPEED, SPRITE_WIDTH
-from player import Player
+from player import GameObject
+
+BACKGROUND_COLOR = "purple"
 
 main_dir = os.path.split(os.path.abspath(__file__))[0]
 data_dir = os.path.join(main_dir, "data")
@@ -38,11 +40,15 @@ clock = pygame.time.Clock()
 running = True
 dt = 0
 
-doughnut_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
-# player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
-# doughnut_pos = pygame.Vector2(player_pos.x + 80, player_pos.y - 80)
+# doughnut_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
+player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
+doughnut_pos = pygame.Vector2(player_pos.x + 80, player_pos.y - 80)
 player = load_image("PXL_20250505_182832275.jpg")
-player_object = Player(player, 40, SPEED)
+player_object = GameObject(player, SPRITE_WIDTH, SPEED, player_pos)
+doughnut = pygame.Surface((SPRITE_WIDTH, SPRITE_WIDTH))
+doughnut.fill(BACKGROUND_COLOR)
+pygame.draw.circle(doughnut, "pink", [SPRITE_WIDTH/2,SPRITE_WIDTH/2], SPRITE_WIDTH/2, SPRITE_WIDTH//4)
+doughnut_object = GameObject(doughnut, SPRITE_WIDTH, SPEED, doughnut_pos)
 direction = random.randint(0, 3)
 count = 0
 change_dir = 10
@@ -58,14 +64,22 @@ while running:
             running = False
 
     # fill the screen with a color to wipe away anything from last frame
-    screen.fill("purple")
+    screen.fill(BACKGROUND_COLOR)
     
-    # draw doughnut
-    pygame.draw.circle(screen, "pink", doughnut_pos, SPRITE_WIDTH/2, SPRITE_WIDTH//4)
-    # pygame.draw.circle(screen, "purple", doughnut_pos, SPRITE_WIDTH/4) # inner circle should be half radius of outer circle
+    # # draw doughnut
+    # pygame.draw.circle(screen, "pink", doughnut_pos, SPRITE_WIDTH/2, SPRITE_WIDTH//4)
+
 
     keys = pygame.key.get_pressed()
-    player_object.move(keys)
+    if keys[pygame.K_w] or keys[pygame.K_UP]:
+        player_object.move(0)
+    if keys[pygame.K_s] or keys[pygame.K_DOWN]:
+        player_object.move(1)
+    if keys[pygame.K_a] or keys[pygame.K_LEFT]:
+        player_object.move(2)
+    if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+        player_object.move(3)
+    screen.blit(doughnut_object.image, doughnut_object.pos)
     screen.blit(player_object.image, player_object.pos)
 
     if start:
@@ -76,23 +90,13 @@ while running:
             count +=1
 
         if direction == 0:
-            doughnut_pos.y -= SPEED
+            doughnut_object.move(0)
         elif direction == 1:
-            doughnut_pos.y += SPEED
+            doughnut_object.move(1)
         elif direction == 2:
-            doughnut_pos.x -= SPEED
+            doughnut_object.move(2)
         else:
-            doughnut_pos.x += SPEED
-
-    # pygame.display.update()
-    # if keys[pygame.K_w] or keys[pygame.K_UP]:
-    #     player_pos.y -= 300 * dt
-    # if keys[pygame.K_s] or keys[pygame.K_DOWN]:
-    #     player_pos.y += 300 * dt
-    # if keys[pygame.K_a] or keys[pygame.K_LEFT]:
-    #     player_pos.x -= 300 * dt
-    # if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
-    #     player_pos.x += 300 * dt
+            doughnut_object.move(3)
 
     # # flip() the display to put your work on screen
     pygame.display.flip()
