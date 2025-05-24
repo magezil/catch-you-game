@@ -26,4 +26,7 @@ class GameObject:
             self.pos.right = WIDTH
         if self.pos.top < 0:
             self.pos.top = HEIGHT-self.height
+
+    def check_collision(self, other):
+        return self.pos.colliderect(other.pos)
     

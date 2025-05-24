@@ -42,13 +42,16 @@ dt = 0
 
 # doughnut_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
 player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
-doughnut_pos = pygame.Vector2(player_pos.x + 80, player_pos.y - 80)
+doughnut_pos = pygame.Vector2(player_pos.x + 80, player_pos.y)
+catcher_pos = pygame.Vector2(player_pos.x - 80, player_pos.y + 80)
 player = load_image("PXL_20250505_182832275.jpg")
-player_object = GameObject(player, SPRITE_WIDTH, SPEED, player_pos)
+player_object = GameObject(player, SPRITE_WIDTH, SPEED * 2, player_pos)
+catcher = load_image("IMG_20210324_152518.jpg", -1, scale=0.1)
+catcher_object = GameObject(catcher, SPRITE_WIDTH, SPEED, catcher_pos)
 doughnut = pygame.Surface((SPRITE_WIDTH, SPRITE_WIDTH))
 doughnut.fill(BACKGROUND_COLOR)
 pygame.draw.circle(doughnut, "pink", [SPRITE_WIDTH/2,SPRITE_WIDTH/2], SPRITE_WIDTH/2, SPRITE_WIDTH//4)
-doughnut_object = GameObject(doughnut, SPRITE_WIDTH, SPEED, doughnut_pos)
+doughnut_object = GameObject(doughnut, SPRITE_WIDTH, SPEED* 3, doughnut_pos)
 direction = random.randint(0, 3)
 count = 0
 change_dir = 10
@@ -72,15 +75,16 @@ while running:
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w] or keys[pygame.K_UP]:
-        player_object.move(0)
+        catcher_object.move(0)
     if keys[pygame.K_s] or keys[pygame.K_DOWN]:
-        player_object.move(1)
+        catcher_object.move(1)
     if keys[pygame.K_a] or keys[pygame.K_LEFT]:
-        player_object.move(2)
+        catcher_object.move(2)
     if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
-        player_object.move(3)
+        catcher_object.move(3)
     screen.blit(doughnut_object.image, doughnut_object.pos)
     screen.blit(player_object.image, player_object.pos)
+    screen.blit(catcher_object.image, catcher_object.pos)
 
     if start:
         if count == change_dir:
@@ -97,6 +101,22 @@ while running:
             doughnut_object.move(2)
         else:
             doughnut_object.move(3)
+
+        if count == 0:
+            direction = random.randint(0, 3)
+        if direction == 0:
+            player_object.move(0)
+        elif direction == 1:
+            player_object.move(1)
+        elif direction == 2:
+            player_object.move(2)
+        else:
+            player_object.move(3)
+        
+        caught = catcher_object.check_collision(player_object)
+        if caught:
+            print("Caught you!")
+
 
     # # flip() the display to put your work on screen
     pygame.display.flip()
