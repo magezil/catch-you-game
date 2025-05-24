@@ -5,7 +5,7 @@ import random
 import pygame
 
 from constants import WIDTH, HEIGHT, SPEED, SPRITE_WIDTH
-from player import GameObject
+from game_object import GameObject
 
 BACKGROUND_COLOR = "purple"
 
