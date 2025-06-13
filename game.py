@@ -1,34 +1,12 @@
 # Example file showing a circle moving on screen
-import os
 import random
-
 import pygame
 
 from constants import WIDTH, HEIGHT, SPRITE_WIDTH
 from game_object import GameObject
+from utils import load_image
 
 BACKGROUND_COLOR = "purple"
-
-main_dir = os.path.split(os.path.abspath(__file__))[0]
-data_dir = os.path.join(main_dir, "data")
-
-def load_image(name, colorkey=None, scale=.1):
-    fullname = os.path.join(data_dir, name)
-    # return pygame.image.load(fullname).convert()
-    image = pygame.image.load(fullname)
-
-    size = image.get_size()
-    scale = SPRITE_WIDTH/size[0]
-    size = (size[0] * scale, size[1] * scale)
-    image = pygame.transform.scale(image, size)
-
-    image = image.convert()
-    if colorkey is not None:
-        if colorkey == -1:
-            colorkey = image.get_at((0, 0))
-        image.set_colorkey(colorkey, pygame.RLEACCEL)
-    return image #, image.get_rect()
-
 
 # pygame setup
 pygame.init()
@@ -50,19 +28,22 @@ if pygame.font:
     background.blit(text, textpos)
 
 player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
-doughnut_pos = pygame.Vector2(player_pos.x + 80, player_pos.y)
-catcher_pos = pygame.Vector2(player_pos.x - 80, player_pos.y + 80)
 player = load_image("PXL_20250505_182832275.jpg")
 player_speed = 10
 player_object = GameObject(player, SPRITE_WIDTH, player_speed, player_pos)
+
+catcher_pos = pygame.Vector2(player_pos.x - 80, player_pos.y + 80)
 catcher = load_image("IMG_20210324_152518.jpg", -1, scale=0.1)
 catcher_speed = 10
 catcher_object = GameObject(catcher, SPRITE_WIDTH, catcher_speed, catcher_pos)
+
+doughnut_pos = pygame.Vector2(player_pos.x + 80, player_pos.y)
 doughnut = pygame.Surface((SPRITE_WIDTH, SPRITE_WIDTH))
 doughnut.fill(BACKGROUND_COLOR) # background of doughnut should be same as the background color
 pygame.draw.circle(doughnut, "pink", [SPRITE_WIDTH/2,SPRITE_WIDTH/2], SPRITE_WIDTH/2, SPRITE_WIDTH//4)
-doughnut_speed = 15
+doughnut_speed = 13
 doughnut_object = GameObject(doughnut, SPRITE_WIDTH, doughnut_speed, doughnut_pos)
+
 direction = random.randint(0, 3)
 count = 0
 change_dir = 10
