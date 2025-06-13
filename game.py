@@ -99,6 +99,15 @@ while running:
             player_object.move(2)
         else:
             player_object.move(3)
+
+        eating = player_object.check_collision(doughnut_object)
+        if eating and pygame.font:
+            r = random.randint(0, 255)
+            g = random.randint(0, 255)
+            b = random.randint(0, 255)
+            eating_text = font.render("NOMNOMNOM YUM", True, (r, g, b))
+            eating_textpos = text.get_rect(centerx=background.get_width() / 4, centery=background.get_height() / 4)
+            screen.blit(eating_text, eating_textpos)
         
         caught = catcher_object.check_collision(player_object)
         if caught and pygame.font:
