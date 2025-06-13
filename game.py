@@ -4,7 +4,7 @@ import random
 
 import pygame
 
-from constants import WIDTH, HEIGHT, SPEED, SPRITE_WIDTH
+from constants import WIDTH, HEIGHT, SPRITE_WIDTH
 from game_object import GameObject
 
 BACKGROUND_COLOR = "purple"
@@ -19,9 +19,6 @@ def load_image(name, colorkey=None, scale=.1):
 
     size = image.get_size()
     scale = SPRITE_WIDTH/size[0]
-    # print(size)
-    # print(size[0] / SPRITE_WIDTH, size[1] / SPRITE_WIDTH)
-    # print(SPRITE_WIDTH/size[0], SPRITE_WIDTH/size[1])
     size = (size[0] * scale, size[1] * scale)
     image = pygame.transform.scale(image, size)
 
@@ -44,6 +41,7 @@ dt = 0
 background = pygame.Surface(screen.get_size())
 background = background.convert()
 background.fill(BACKGROUND_COLOR)
+caught_text = None
 
 if pygame.font:
     font = pygame.font.Font(None, 64)
@@ -51,18 +49,20 @@ if pygame.font:
     textpos = text.get_rect(centerx=background.get_width() / 2, y=10)
     background.blit(text, textpos)
 
-# doughnut_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
 player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
 doughnut_pos = pygame.Vector2(player_pos.x + 80, player_pos.y)
 catcher_pos = pygame.Vector2(player_pos.x - 80, player_pos.y + 80)
 player = load_image("PXL_20250505_182832275.jpg")
-player_object = GameObject(player, SPRITE_WIDTH, SPEED * 2, player_pos)
+player_speed = 10
+player_object = GameObject(player, SPRITE_WIDTH, player_speed, player_pos)
 catcher = load_image("IMG_20210324_152518.jpg", -1, scale=0.1)
-catcher_object = GameObject(catcher, SPRITE_WIDTH, SPEED, catcher_pos)
+catcher_speed = 10
+catcher_object = GameObject(catcher, SPRITE_WIDTH, catcher_speed, catcher_pos)
 doughnut = pygame.Surface((SPRITE_WIDTH, SPRITE_WIDTH))
 doughnut.fill(BACKGROUND_COLOR) # background of doughnut should be same as the background color
 pygame.draw.circle(doughnut, "pink", [SPRITE_WIDTH/2,SPRITE_WIDTH/2], SPRITE_WIDTH/2, SPRITE_WIDTH//4)
-doughnut_object = GameObject(doughnut, SPRITE_WIDTH, SPEED* 3, doughnut_pos)
+doughnut_speed = 15
+doughnut_object = GameObject(doughnut, SPRITE_WIDTH, doughnut_speed, doughnut_pos)
 direction = random.randint(0, 3)
 count = 0
 change_dir = 10
@@ -120,8 +120,13 @@ while running:
             player_object.move(3)
         
         caught = catcher_object.check_collision(player_object)
-        if caught:
-            print("Caught you!")
+        if caught and pygame.font:
+            r = random.randint(0, 255)
+            g = random.randint(0, 255)
+            b = random.randint(0, 255)
+            caught_text = font.render("Caught you!", True, (r, g, b))
+            caught_textpos = text.get_rect(centerx=background.get_width() / 2, centery=background.get_height() / 2)
+            screen.blit(caught_text, caught_textpos)
 
 
     # # flip() the display to put your work on screen
