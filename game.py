@@ -35,10 +35,21 @@ def load_image(name, colorkey=None, scale=.1):
 
 # pygame setup
 pygame.init()
+pygame.display.set_caption("Catch you game!")
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
 running = True
 dt = 0
+
+background = pygame.Surface(screen.get_size())
+background = background.convert()
+background.fill(BACKGROUND_COLOR)
+
+if pygame.font:
+    font = pygame.font.Font(None, 64)
+    text = font.render("Catch Falkor!", True, (10, 10, 10))
+    textpos = text.get_rect(centerx=background.get_width() / 2, y=10)
+    background.blit(text, textpos)
 
 # doughnut_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
 player_pos = pygame.Vector2(screen.get_width() / 2, screen.get_height() / 2)
@@ -49,7 +60,7 @@ player_object = GameObject(player, SPRITE_WIDTH, SPEED * 2, player_pos)
 catcher = load_image("IMG_20210324_152518.jpg", -1, scale=0.1)
 catcher_object = GameObject(catcher, SPRITE_WIDTH, SPEED, catcher_pos)
 doughnut = pygame.Surface((SPRITE_WIDTH, SPRITE_WIDTH))
-doughnut.fill(BACKGROUND_COLOR)
+doughnut.fill(BACKGROUND_COLOR) # background of doughnut should be same as the background color
 pygame.draw.circle(doughnut, "pink", [SPRITE_WIDTH/2,SPRITE_WIDTH/2], SPRITE_WIDTH/2, SPRITE_WIDTH//4)
 doughnut_object = GameObject(doughnut, SPRITE_WIDTH, SPEED* 3, doughnut_pos)
 direction = random.randint(0, 3)
@@ -66,13 +77,8 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    # fill the screen with a color to wipe away anything from last frame
-    screen.fill(BACKGROUND_COLOR)
+    screen.blit(background, (0, 0))
     
-    # # draw doughnut
-    # pygame.draw.circle(screen, "pink", doughnut_pos, SPRITE_WIDTH/2, SPRITE_WIDTH//4)
-
-
     keys = pygame.key.get_pressed()
     if keys[pygame.K_w] or keys[pygame.K_UP]:
         catcher_object.move(0)
